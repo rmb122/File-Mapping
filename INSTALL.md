@@ -6,7 +6,7 @@ config:
 UPLOAD_PATH 填一个绝对路径, 最后不要带 `/` 分隔符, 而且注意需要运行用户可写  
 
 ```sh
-cp config.py.example config.py
+cp config.example.py config.py
 ```
 ```python
 from file_mapping.utils import urandom, generaterSalt, generaterPass
