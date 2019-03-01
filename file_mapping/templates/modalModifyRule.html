@@ -1,0 +1,30 @@
+<div class="modal fade" id="modifyRule" tabindex="-1" role="dialog" aria-labelledby="newRule" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modifyRuleTitle" class="modal-title">编辑规则</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column">
+                    <input id="modifyRuleID" type="hidden"></input>
+                    <label for="modifyRuleRoute" class="mb-0">路由</label>
+                    <input id="modifyRuleRoute" type="text" class="form-control" placeholder="test"></input>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="modifyRuleRecord">
+                        <label class="custom-control-label" for="modifyRuleRecord">记录访问历史</label>
+                    </div>
+                    <label for="modifyRuleFilename" class="mb-0 mt-2">文件名</label>
+                    <input id="modifyRuleFilename" type="text" class="form-control" placeholder="a.js"></input>
+                    <label for="modifyRuleMemo" class="mb-0 mt-2">备注</label>
+                    <input id="modifyRuleMemo" type="text" class="form-control" placeholder=""></input>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnModifyRule" type="button" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </div>
+</div>

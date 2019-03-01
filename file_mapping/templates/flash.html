@@ -1,0 +1,11 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+<div class="toast mx-auto mt-5 font-weight-bold text-center top" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
+    <div class="toast-body bg-danger text-white">
+    {{ message }}
+    </div>
+</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}

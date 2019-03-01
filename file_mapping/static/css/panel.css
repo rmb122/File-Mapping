@@ -1,0 +1,109 @@
+.fileLabel:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.fileLabel {
+    color: #007bff;
+}
+
+.hidden {
+    display: none;
+}
+
+.top {
+    position: absolute;
+    top: 10%;
+    right: 0%;
+    left: 0%;
+    pointer-events: none;
+}
+
+.h-30rem {
+    height: 30rem !important;
+}
+
+.w-3rem {
+    width: 3rem !important;
+    min-width: 3rem !important;
+}
+
+.w-5rem {
+    width: 5rem !important;
+    min-width: 5rem !important;
+}
+
+.w-7rem {
+    width: 7rem !important;
+    min-width: 7rem !important;
+}
+
+.w-9rem {
+    width: 9rem !important;
+    min-width: 9rem !important;
+}
+
+.w-12rem {
+    width: 12rem !important;
+    min-width: 12rem !important;
+}
+
+.w-16rem {
+    max-width: 16rem !important;
+    width: 16rem !important;
+    min-width: 16rem !important;
+}
+
+.sm-font {
+    font-size: 0.8rem;
+}
+
+th {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
+td {
+    vertical-align:middle !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
+.mw-1000 {
+    width: 1000px;
+    max-width: 1000px !important;
+}
+
+.popover{
+    max-width: 90% !important;
+}
+
+pre {
+    outline: 1px solid #ccc; 
+    padding: 5px; 
+    margin: 5px; 
+}
+
+.string { 
+    color: green; 
+}
+
+.number {
+    color: darkorange; 
+}
+
+.boolean { 
+    color: blue;
+}
+
+.null { 
+    color: magenta; 
+}
+
+.key {
+    color: red; 
+}
