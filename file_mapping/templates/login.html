@@ -19,6 +19,7 @@
             <div class="form-group mt-4">
                 <label for="password">Login</label>
                 <div class="w-50 mx-auto mw-200">
+                    <input class="form-control mb-2" id="username" name="username" placeholder="Username" required value="">
                     {{ form.password(class='form-control', id='password', placeholder='Password') }}
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 </div>

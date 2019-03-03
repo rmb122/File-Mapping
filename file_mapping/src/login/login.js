@@ -10,9 +10,11 @@ $(document).ready(function () {
 });
 
 function hash() {
-    var password = $("#password").val();
-    if (password != '') {
-        password = CryptoJS.SHA256(password + salt).toString();
-        $("#password").val(password);
+    if ($("#password").val() !== '' && $("#username").val() !== '') {
+        var password = $("#password").val();
+        if (password != '') {
+            password = CryptoJS.SHA256(password + salt).toString();
+            $("#password").val(password);
+        }
     }
 }
