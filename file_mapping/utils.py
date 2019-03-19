@@ -48,7 +48,7 @@ def safe(func):
         response = func(*args, **kwargs)
         if type(response) != Response:
             response = make_response(response)
-        response.headers['Content-Security-Policy'] = "default-src 'self';style-src 'self' cdn.bootcss.com;font-src cdn.bootcss.com;script-src 'self' cdn.bootcss.com;img-src 'self' data:;frame-src 'none'"
+        response.headers['Content-Security-Policy'] = "default-src 'self';style-src 'self' cdn.bootcss.com;font-src cdn.bootcss.com;script-src 'self' cdn.bootcss.com;img-src 'self' data:;frame-src 'none';object-src 'none';"
         response.headers['X-XSS-Protection'] = '1; mode=block'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-Frame-Options'] = 'DENY'
