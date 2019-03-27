@@ -324,11 +324,6 @@ def mapping(path=''):
             type = request.headers.get('Content-Type', '').lower()
             if type == 'application/x-www-form-urlencoded':
                 post = dumps(dict(request.form))
-            elif type == 'application/json':
-                try:
-                    post = dumps(request.get_json())
-                except Exception:
-                    post = '{}'
             else:
                 data = request.get_data()
                 try:
