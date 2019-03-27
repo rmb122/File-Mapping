@@ -330,8 +330,12 @@ def mapping(path=''):
                 except Exception:
                     post = '{}'
             else:
+                data = request.get_data()
                 try:
-                    post = dumps({'RAW_DATA': request.get_data().decode('utf-8')})
+                    if len(data) > 0:
+                        post = dumps({'RAW_DATA': data.decode('utf-8')})
+                    else:
+                        post = '{}'
                 except Exception:
                     post = '{}'
             
