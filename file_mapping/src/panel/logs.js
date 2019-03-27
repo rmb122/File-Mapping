@@ -91,7 +91,7 @@ function formatUA(ua) {
     }
 }
 
-function formaCookie(cookies) {
+function formatCookie(cookies) {
     cookies = cookies.split(';');
     var keys = [];
     cookies.map(function (cookie) {
@@ -156,7 +156,7 @@ function getLogs(page) {
                     data['POST'] = Object.keys(dict['POST']);
                 }
                 if (dict['Header']['Cookie']) {
-                    data['COOKIE'] = formaCookie(dict['Header']['Cookie']);
+                    data['COOKIE'] = formatCookie(dict['Header']['Cookie']);
                 }
                 data = JSON.stringify(data);
                 template = template.replace(/{{index}}/g, String(index));

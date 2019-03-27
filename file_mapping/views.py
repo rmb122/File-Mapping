@@ -320,7 +320,21 @@ def mapping(path=''):
             method = request.method
             header = dumps(dict(request.headers))
             get = dumps(dict(request.args))
-            post = dumps(dict(request.form))
+
+            type = request.headers.get('Content-Type', '').lower()
+            if type == 'application/x-www-form-urlencoded':
+                post = dumps(dict(request.form))
+            elif type == 'application/json':
+                try:
+                    post = dumps(request.get_json())
+                except Exception:
+                    post = '{}'
+            else:
+                try:
+                    post = dumps({'RAW_DATA': request.get_data().decode('utf-8')})
+                except Exception:
+                    post = '{}'
+            
             ip = request.remote_addr
             log = Log(route=path, header=header, get=get, post=post, ip=ip, method=method)
             db.session.add(log)
