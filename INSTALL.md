@@ -1,9 +1,13 @@
-需要 uwsgi + python3 插件, python3 本体, nginx  
+需要 uwsgi + python3 插件, python3 本体 (>= 3.6), nginx  
+```sh
+sudo apt install uwsgi uwsgi-plugin-python3 python3 python3-pip nginx-full
+sudo python3 -m pip install -r requirements.txt
+```
 
 config:  
 可以按照下面生成配置文件  
 如果要更好性能, 可以把 sqlite 换成 mysql 服务器  
-UPLOAD_PATH 填一个绝对路径, 最后不要带 `/` 分隔符, 而且注意需要运行用户可写  
+`UPLOAD_PATH` 填一个绝对路径, 最后不要带 `/` 分隔符, 而且注意需要运行用户可写  
 
 ```sh
 cp config.example.py config.py
@@ -14,10 +18,9 @@ from file_mapping.utils import urandom, generaterSalt, generaterPass
 password = 'modify this to your own password here'
 salt = generaterSalt()
 hash = generaterPass(password, salt)
-print('SECRET_KEY =', urandom(16))
-print('ADMIN_PASSWORD =', hash)
-print('LOGIN_SALT =', salt)
-
+print(f"SECRET_KEY = '{urandom(16)}'")
+print(f"ADMIN_PASSWORD = '{hash}'")
+print(f"LOGIN_SALT = '{salt}'")
 ```
 
 uwsgi:  
@@ -26,9 +29,26 @@ uwsgi --ini app.ini --plugins=python3
 ```
 nginx:  
 ```nginx
-location / {
-    include uwsgi_params;
-    uwsgi_pass unix:/tmp/app.sock;
+server {
+        listen 80;
+        listen [::]:80;
+
+        server_name example.com;
+
+        location / {
+                include uwsgi_params;
+                uwsgi_pass                      unix:/tmp/app.sock;
+                uwsgi_param Host                $host;
+                uwsgi_param X-Real-IP           $remote_addr;
+                uwsgi_param X-Forwarded-For     $proxy_add_x_forwarded_for;
+                uwsgi_param X-Forwarded-Proto   $http_x_forwarded_proto;
+        }
+
+        proxy_http_version              1.1;
+        proxy_cache_bypass              $http_upgrade;
+        proxy_set_header Upgrade        $http_upgrade;
+        proxy_set_header Connection     "upgrade";
+        proxy_set_header Host           $host;
 }
 ```
 
