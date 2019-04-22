@@ -262,13 +262,18 @@ def getlogs():
     response['logs'] = []
     
     for log in logs:
-        region = False
-        while not region:
-            try:
-                region = ip2Region.btreeSearch(log.ip)
-            except Exception:
-                pass
-        region = formatRegion(region)
+        if log.ip != "":
+            region = ""
+            retry = 0
+            while not region and retry < 6:
+                try:
+                    region = ip2Region.btreeSearch(log.ip)
+                except Exception:
+                    retry += 1
+                    pass
+            region = formatRegion(region)
+        else:
+            region = "不支持 IPv6 地址查询"
         response['logs'].append({
             'Method': escape(log.method),
             'IP': escape(log.ip),
@@ -335,6 +340,8 @@ def mapping(path=''):
                     post = '{}'
             
             ip = request.remote_addr
+            if ip.find(":", 0, 5) != -1: # 判断是不是 ipv6
+                ip = ""
             log = Log(route=path, header=header, get=get, post=post, ip=ip, method=method)
             db.session.add(log)
             db.session.commit()
