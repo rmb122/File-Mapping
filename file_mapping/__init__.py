@@ -6,7 +6,7 @@ from flask_wtf import CSRFProtect
 from file_mapping.asserts.ip2region import Ip2Region
 from file_mapping.utils import NoServerHeaderFlask
 
-app = NoServerHeaderFlask(__name__)
+app = NoServerHeaderFlask(__name__, static_folder='')
 app.config.from_pyfile('config.example.py')
 app.config.from_pyfile('config.py')
 csrf = CSRFProtect()
@@ -18,4 +18,4 @@ ip2Region = Ip2Region(f'{app.root_path}/asserts/ip2region.db')
 
 from file_mapping.models import Log, Rule
 db.create_all()
-from file_mapping import views
+from file_mapping import admin_views, index_views

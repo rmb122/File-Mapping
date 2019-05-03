@@ -1,52 +1,54 @@
-from json import dumps, loads
+from json import loads
 from os import listdir, remove, rename
 from os.path import exists, getsize, isfile
 
-from flask import Flask, escape, flash, jsonify, redirect, render_template, request, send_file, url_for
+from flask import Flask, escape, flash, jsonify, redirect, render_template, request, send_file, url_for, Blueprint
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 
-from file_mapping import app, csrf, db, ip2Region
-from file_mapping.config import ADMIN_PASSWORD, ALLOWED_METHODS, LOGIN_SALT, UPLOAD_PATH, MAX_PREVIEW_SIZE
+from file_mapping import app, db, ip2Region
+from file_mapping.config import ADMIN_PASSWORD, LOGIN_SALT, UPLOAD_PATH, MAX_PREVIEW_SIZE, URL_PREFIX
 from file_mapping.forms import LoginForm
 from file_mapping.models import Log, Rule, User
-from file_mapping.utils import escapeDict, formatRegion, hash, nocache, safe
+from file_mapping.utils import escapeDict, formatRegion, hash, safe
 
 
-@app.route('/admin', methods=['GET', 'POST'])
+admin = Blueprint('admin', __name__, static_folder='static')
+
+@admin.route('/admin', methods=['GET', 'POST'])
 @safe
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('panel'))
+        return redirect(url_for('admin.panel'))
 
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         if hash(form.password.data) == ADMIN_PASSWORD:
             user = User(1)
             login_user(user)
-            return redirect(url_for('panel'))
+            return redirect(url_for('admin.panel'))
         else:
             flash('Password error')
 
     return render_template('login.html', title='Login', form=form, salt=LOGIN_SALT)
 
 
-@app.route('/admin/panel')
+@admin.route('/admin/panel')
 @safe
 @login_required
 def panel():
     return render_template('panel.html', title='管理面板')
 
 
-@app.route('/admin/logout')
+@admin.route('/admin/logout')
 @safe
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('admin.login'))
 
 
-@app.route('/admin/addrule', methods=['POST'])
+@admin.route('/admin/addrule', methods=['POST'])
 @safe
 @login_required
 def addrule():
@@ -76,7 +78,7 @@ def addrule():
     return jsonify(response)
 
 
-@app.route('/admin/delrule', methods=['POST'])
+@admin.route('/admin/delrule', methods=['POST'])
 @safe
 @login_required
 def delrule():
@@ -94,7 +96,7 @@ def delrule():
     return jsonify(response)
 
 
-@app.route('/admin/modifyrule', methods=['POST'])
+@admin.route('/admin/modifyrule', methods=['POST'])
 @safe
 @login_required
 def modifyrule():
@@ -126,7 +128,7 @@ def modifyrule():
     return jsonify(response)
 
 
-@app.route('/admin/getrules')
+@admin.route('/admin/getrules')
 @safe
 @login_required
 def getrules():
@@ -137,7 +139,7 @@ def getrules():
     return jsonify(tmp)
 
 
-@app.route('/admin/addfile', methods=['POST'])
+@admin.route('/admin/addfile', methods=['POST'])
 @safe
 @login_required
 def addfile():
@@ -158,7 +160,7 @@ def addfile():
     return jsonify(response)
 
 
-@app.route('/admin/delfile', methods=['POST'])
+@admin.route('/admin/delfile', methods=['POST'])
 @safe
 @login_required
 def delfile():
@@ -175,7 +177,7 @@ def delfile():
     return jsonify(response)
 
 
-@app.route('/admin/getfile', methods=['POST'])
+@admin.route('/admin/getfile', methods=['POST'])
 @safe
 @login_required
 def getfile():
@@ -208,7 +210,7 @@ def getfile():
     return response
 
 
-@app.route('/admin/modifyfile', methods=['POST'])
+@admin.route('/admin/modifyfile', methods=['POST'])
 @safe
 @login_required
 def modifyfile():
@@ -234,7 +236,7 @@ def modifyfile():
     return jsonify(response)
 
 
-@app.route('/admin/getfilelist')
+@admin.route('/admin/getfilelist')
 @safe
 @login_required
 def getfilelist():
@@ -246,7 +248,7 @@ def getfilelist():
     return jsonify(response)
 
 
-@app.route('/admin/getlogs')
+@admin.route('/admin/getlogs')
 @safe
 @login_required
 def getlogs():
@@ -286,7 +288,7 @@ def getlogs():
     return jsonify(response)
 
 
-@app.route('/admin/getlogscount')
+@admin.route('/admin/getlogscount')
 @safe
 @login_required
 def getlogscount():
@@ -297,7 +299,7 @@ def getlogscount():
     return jsonify(response)
 
 
-@app.route('/admin/dellogs', methods=['POST'])
+@admin.route('/admin/dellogs', methods=['POST'])
 @safe
 @login_required
 def dellogs():
@@ -310,46 +312,4 @@ def dellogs():
         response = {'success': False, 'error': '无效参数'}
     return jsonify(response)
 
-
-@csrf.exempt
-@app.route('/', methods=ALLOWED_METHODS)
-@app.route('/<path:path>', methods=ALLOWED_METHODS)
-@nocache
-def mapping(path=''):
-    path = request.path
-    rule = Rule.query.filter_by(route=path).first()
-    if rule:
-        if rule.record:
-            method = request.method
-            header = dumps(dict(request.headers))
-            get = dumps(dict(request.args))
-
-            type = request.headers.get('Content-Type', '').lower()
-            if type == 'application/x-www-form-urlencoded':
-                post = dumps(dict(request.form))
-            else:
-                data = request.get_data()
-                try:
-                    if len(data) > 0:
-                        post = dumps({'RAW_DATA': data.decode('utf-8')})
-                    else:
-                        post = '{}'
-                except Exception:
-                    post = '{}'
-
-            ip = request.remote_addr
-            if ip.find(":", 0, 5) != -1:  # 判断是不是 ipv6
-                ip = ""
-            log = Log(route=path, header=header, get=get, post=post, ip=ip, method=method)
-            db.session.add(log)
-            db.session.commit()
-
-        filename = secure_filename(rule.filename)
-        filepath = f'{UPLOAD_PATH}/{filename}'
-        if filename and exists(filepath):
-            response = send_file(filepath)
-        else:
-            response = ('', 404)
-    else:
-        response = ('', 404)
-    return response
+app.register_blueprint(admin, url_prefix=URL_PREFIX)

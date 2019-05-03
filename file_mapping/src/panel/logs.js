@@ -1,5 +1,6 @@
 import UAParser from './ua-parser.js';
 import toast from './toast.js';
+import config from './config.js';
 
 $(document).ready(function () {
     $("#btnGetLogs").click(function () {
@@ -132,7 +133,7 @@ function getLogs(page) {
     t.innerHTML = "";
     var temp = '<thead><tr><th scope="col" class="text-center w-3rem">ID</th><th scope="col" class="text-center w-9rem">时间</th><th scope="col" class="text-center w-7rem">IP</th><th scope="col" class="text-center w-12rem">地区</th><th scope="col" class="text-center w-16rem">UA</th><th scope="col" class="text-center w-3rem">类型</th><th scope="col">数据</th></tr></thead><tbody>';
     $.get(
-        '/admin/getlogs',
+        config['URL_PREFIX'] + '/admin/getlogs',
         {
             'page': page,
         },
@@ -186,7 +187,7 @@ function getLogs(page) {
 
 function dellogs() {
     $.post(
-        '/admin/dellogs',
+        config['URL_PREFIX'] + '/admin/dellogs',
         {
             'delete': 'delete',
         },
@@ -203,7 +204,7 @@ function dellogs() {
 
 function fetchUpdate() {
     $.get(
-        '/admin/getlogscount',
+        config['URL_PREFIX'] + '/admin/getlogscount',
         {},
         function (json) {
             var tmp = json['count'];

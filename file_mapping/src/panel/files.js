@@ -1,4 +1,5 @@
 import toast from './toast.js';
+import config from './config.js';
 
 $(document).ready(function () {
     $("#fileInput").change(uploadFile);
@@ -12,7 +13,7 @@ function uploadFile() {
     formData.append('file', $('#fileInput')[0].files[0]);
 
     $.ajax({
-        url: '/admin/addfile',
+        url: config['URL_PREFIX'] + '/admin/addfile',
         type: 'POST',
         data: formData,
         processData: false,
@@ -31,7 +32,7 @@ function uploadFile() {
 
 function downloadFile(filename) {
     var form = $('<form method="POST" target="_blank"></form>');
-    form.attr('action', '/admin/getfile');
+    form.attr('action', config['URL_PREFIX'] + '/admin/getfile');
     var token = $('meta[name=csrf-token]').attr('content');
     var input = $('<input type="hidden" name="filename" value="' + filename + '"></input>')
     var csrf = $('<input type="hidden" name="csrf_token" value="' + token + '"></input>')
@@ -60,7 +61,7 @@ function getFileList() {
     t.innerHTML = "";
     var temp = '<thead><tr><th scope="col">文件名</th><th scope="col" class="text-center w-7rem">大小</th><th scope="col" class="text-center w-7rem">操作</th></tr></thead><tbody>';
     $.get(
-        '/admin/getfilelist',
+        config['URL_PREFIX'] + '/admin/getfilelist',
         {},
         function (json) {
             json = json.sort(function (a, b) {
@@ -90,7 +91,7 @@ function getFileList() {
 
 function modifyFile(filename) {
     $.post(
-        '/admin/getfile',
+        config['URL_PREFIX'] + '/admin/getfile',
         {
             'filename': filename,
             'preview': true,
@@ -131,7 +132,7 @@ function uploadModifyFile() {
         data['content'] = content;
     }
     $.post(
-        '/admin/modifyfile',
+        config['URL_PREFIX'] + '/admin/modifyfile',
         data,
         function (json) {
             $('#modifyFile').modal('hide');
@@ -150,7 +151,7 @@ function delFile(filename) {
         return;
     }
     $.post(
-        '/admin/delfile',
+        config['URL_PREFIX'] + '/admin/delfile',
         {
             'filename': filename
         },
