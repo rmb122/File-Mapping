@@ -2,7 +2,7 @@ from sys import path
 from os.path import join
 
 
-def fix_config():
+def try_fix_config():
     example = {}
     with open(join(path[0], 'file_mapping/config.example.py'), 'rb') as f:
         exec(f.read(), example)
@@ -21,7 +21,7 @@ def fix_config():
                     f.write(f"{example[key]}")
 
 
-fix_config()
+try_fix_config()
 
 from file_mapping import app
 
