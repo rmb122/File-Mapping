@@ -12,7 +12,7 @@ config:
 需要注意以 `/` 开头, 不以 `/` 结尾, 例如 `/test`, 如果不需要此功能请留空.   
 
 ```sh
-cp config.example.py config.py
+cp config.example.py config.py # 不要用 mv, example 将会作为配置的缺省值
 ```
 ```python
 from file_mapping.utils import urandom, generaterSalt, generaterPass
