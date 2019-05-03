@@ -38,4 +38,4 @@ def loadUser(id):
 @loginManager.unauthorized_handler
 def redirectLogin():
     flash('Please login first')
-    return redirect(url_for('login'))
+    return redirect(url_for('admin.login'))
