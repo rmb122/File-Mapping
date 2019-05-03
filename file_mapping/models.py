@@ -3,6 +3,7 @@ from file_mapping import loginManager
 from flask import redirect, url_for, flash
 from file_mapping import db
 
+
 class User(UserMixin):
     def __init__(self, id):
         self.id = id

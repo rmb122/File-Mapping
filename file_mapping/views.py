@@ -2,14 +2,12 @@ from json import dumps, loads
 from os import listdir, remove, rename
 from os.path import exists, getsize, isfile
 
-from flask import (Flask, escape, flash, jsonify, redirect, render_template,
-                   request, send_file, url_for)
+from flask import Flask, escape, flash, jsonify, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 
 from file_mapping import app, csrf, db, ip2Region
-from file_mapping.config import (ADMIN_PASSWORD, ALLOWED_METHODS, LOGIN_SALT,
-                                 UPLOAD_PATH)
+from file_mapping.config import ADMIN_PASSWORD, ALLOWED_METHODS, LOGIN_SALT, UPLOAD_PATH, MAX_PREVIEW_SIZE
 from file_mapping.forms import LoginForm
 from file_mapping.models import Log, Rule, User
 from file_mapping.utils import escapeDict, formatRegion, hash, nocache, safe
@@ -29,7 +27,7 @@ def login():
             return redirect(url_for('panel'))
         else:
             flash('Password error')
-    
+
     return render_template('login.html', title='Login', form=form, salt=LOGIN_SALT)
 
 
@@ -85,7 +83,7 @@ def delrule():
     id = request.form.get('id', None, int)
     if id:
         rule = Rule.query.filter_by(id=id).first()
-        if rule: 
+        if rule:
             db.session.delete(rule)
             db.session.commit()
             response = {'success': True, 'error': ''}
@@ -93,7 +91,7 @@ def delrule():
             response = {'success': False, 'error': '规则不存在'}
     else:
         response = {'success': False, 'error': '无效参数'}
-    return jsonify(response) 
+    return jsonify(response)
 
 
 @app.route('/admin/modifyrule', methods=['POST'])
@@ -115,7 +113,7 @@ def modifyrule():
                     record = False
                 rule.filename = filename
                 rule.route = route
-                rule.record = record 
+                rule.record = record
                 rule.memo = memo
                 db.session.commit()
                 response = {'success': True, 'error': ''}
@@ -125,7 +123,7 @@ def modifyrule():
             response = {'success': False, 'error': '文件不存在'}
     else:
         response = {'success': False, 'error': '无效参数'}
-    return jsonify(response) 
+    return jsonify(response)
 
 
 @app.route('/admin/getrules')
@@ -186,7 +184,7 @@ def getfile():
     path = f'{UPLOAD_PATH}/{filename}'
     if preview == 'true':
         if filename:
-            if exists(path) and getsize(path) < 20480 and isfile(path):
+            if exists(path) and getsize(path) < MAX_PREVIEW_SIZE and isfile(path):
                 try:
                     f = open(path, 'rb')
                     c = f.read().decode()
@@ -260,7 +258,7 @@ def getlogs():
     count, = db.session.query(db.func.count(Log.id)).one()
     response['count'] = count
     response['logs'] = []
-    
+
     for log in logs:
         if log.ip != "":
             region = ""
@@ -338,9 +336,9 @@ def mapping(path=''):
                         post = '{}'
                 except Exception:
                     post = '{}'
-            
+
             ip = request.remote_addr
-            if ip.find(":", 0, 5) != -1: # 判断是不是 ipv6
+            if ip.find(":", 0, 5) != -1:  # 判断是不是 ipv6
                 ip = ""
             log = Log(route=path, header=header, get=get, post=post, ip=ip, method=method)
             db.session.add(log)
