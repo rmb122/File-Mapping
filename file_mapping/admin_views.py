@@ -1,17 +1,17 @@
 from json import loads
 from os import listdir, remove, rename
 from os.path import exists, getsize, isfile
+from secrets import compare_digest
 
-from flask import Flask, escape, flash, jsonify, redirect, render_template, request, send_file, url_for, Blueprint
+from flask import Blueprint, Flask, escape, flash, jsonify, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 
 from file_mapping import app, db, ip2Region
-from file_mapping.config import ADMIN_PASSWORD, LOGIN_SALT, UPLOAD_PATH, MAX_PREVIEW_SIZE, URL_PREFIX
+from file_mapping.config import ADMIN_PASSWORD, LOGIN_SALT, MAX_PREVIEW_SIZE, UPLOAD_PATH, URL_PREFIX
 from file_mapping.forms import LoginForm
 from file_mapping.models import Log, Rule, User
 from file_mapping.utils import escapeDict, formatRegion, hash, safe
-
 
 admin = Blueprint('admin', __name__, static_folder='static')
 
@@ -23,7 +23,7 @@ def login():
 
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
-        if hash(form.password.data) == ADMIN_PASSWORD:
+        if compare_digest(hash(form.password.data), ADMIN_PASSWORD):
             user = User(1)
             login_user(user)
             return redirect(url_for('admin.panel'))
