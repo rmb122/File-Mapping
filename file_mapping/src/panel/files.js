@@ -1,5 +1,4 @@
 import toast from './toast.js';
-import config from './config.js';
 
 $(document).ready(function () {
     $("#fileInput").change(uploadFile);
@@ -13,7 +12,7 @@ function uploadFile() {
     formData.append('file', $('#fileInput')[0].files[0]);
 
     $.ajax({
-        url: config['URL_PREFIX'] + '/admin/addfile',
+        url: 'addfile',
         type: 'POST',
         data: formData,
         processData: false,
@@ -32,7 +31,7 @@ function uploadFile() {
 
 function downloadFile(filename) {
     var form = $('<form method="POST" target="_blank"></form>');
-    form.attr('action', config['URL_PREFIX'] + '/admin/getfile');
+    form.attr('action', 'getfile');
     var token = $('meta[name=csrf-token]').attr('content');
     var input = $('<input type="hidden" name="filename" value="' + filename + '"></input>')
     var csrf = $('<input type="hidden" name="csrf_token" value="' + token + '"></input>')
@@ -61,7 +60,7 @@ function getFileList() {
     t.innerHTML = "";
     var temp = '<thead><tr><th scope="col">文件名</th><th scope="col" class="text-center w-7rem">大小</th><th scope="col" class="text-center w-7rem">操作</th></tr></thead><tbody>';
     $.get(
-        config['URL_PREFIX'] + '/admin/getfilelist',
+        'getfilelist',
         {},
         function (json) {
             json = json.sort(function (a, b) {
@@ -91,7 +90,7 @@ function getFileList() {
 
 function modifyFile(filename) {
     $.post(
-        config['URL_PREFIX'] + '/admin/getfile',
+        'getfile',
         {
             'filename': filename,
             'preview': true,
@@ -132,7 +131,7 @@ function uploadModifyFile() {
         data['content'] = content;
     }
     $.post(
-        config['URL_PREFIX'] + '/admin/modifyfile',
+        'modifyfile',
         data,
         function (json) {
             $('#modifyFile').modal('hide');
@@ -151,7 +150,7 @@ function delFile(filename) {
         return;
     }
     $.post(
-        config['URL_PREFIX'] + '/admin/delfile',
+        'delfile',
         {
             'filename': filename
         },

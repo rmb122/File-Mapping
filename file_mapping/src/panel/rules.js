@@ -1,6 +1,5 @@
 import he from './he.js';
 import toast from './toast.js';
-import config from './config.js';
 
 $(document).ready(function () {
     $("#btnAddRule").click(addRule);
@@ -65,7 +64,7 @@ function addRule() {
         rule['record'] = false;
     }
     $.post(
-        config['URL_PREFIX'] + '/admin/addrule',
+        'addrule',
         rule,
         function (json) {
             if (json['success']) {
@@ -91,7 +90,7 @@ function addRule() {
 
 function getRules() {
     $.get(
-        config['URL_PREFIX'] + '/admin/getrules',
+        'getrules',
         {},
         function (json) {
             rules = json;
@@ -138,7 +137,7 @@ function delRule(id) {
         return;
     }
     $.post(
-        config['URL_PREFIX'] + '/admin/delrule',
+        'delrule',
         {
             'id': id
         },
@@ -187,7 +186,7 @@ function modifyRule() {
         rule['record'] = false;
     }
     $.post(
-        config['URL_PREFIX'] + '/admin/modifyrule',
+        'modifyrule',
         rule,
         function (json) {
             if (json['success']) {

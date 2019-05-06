@@ -8,8 +8,7 @@ config:
 可以按照下面生成配置文件  
 如果要更好性能, 可以把 sqlite 换成 mysql 服务器  
 `UPLOAD_PATH` 填一个绝对路径, 最后不要带 `/` 分隔符, 而且注意需要运行用户可写  
-`URL_PREFIX` 为后台管理的路由前缀, 需要同时修改 `src/panel/config.js` 里的同名值并用 `webpack` 编译,  
-需要注意以 `/` 开头, 不以 `/` 结尾, 例如 `/test`, 如果不需要此功能请留空.   
+`URL_PREFIX` 为后台管理的路由前缀, 需要注意以 `/` 开头, 不以 `/` 结尾, 例如 `/test`, 如果不需要此功能请留空.  
 
 ```sh
 cp config.example.py config.py # 不要用 mv, example 将会作为配置的缺省值
@@ -20,7 +19,7 @@ from file_mapping.utils import urandom, generaterSalt, generaterPass
 password = 'modify this to your own password here'
 salt = generaterSalt()
 hash = generaterPass(password, salt)
-print(f"SECRET_KEY = '{urandom(16)}'")
+print(f"SECRET_KEY = {urandom(16)}")
 print(f"ADMIN_PASSWORD = '{hash}'")
 print(f"LOGIN_SALT = '{salt}'")
 ```
