@@ -6,7 +6,7 @@ from flask_wtf import CSRFProtect
 from file_mapping.asserts.ip2region import Ip2Region
 from file_mapping.utils import NoServerHeaderFlask
 
-app = NoServerHeaderFlask(__name__, static_folder='')
+app = NoServerHeaderFlask(__name__, static_folder=None)
 app.config.from_pyfile('config.example.py')
 app.config.from_pyfile('config.py')
 csrf = CSRFProtect()

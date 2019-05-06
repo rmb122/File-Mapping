@@ -9,7 +9,7 @@ from file_mapping.config import ALLOWED_METHODS, UPLOAD_PATH
 from file_mapping.models import Log, Rule
 from file_mapping.utils import nocache
 
-index = Blueprint('index', __name__, static_folder='')
+index = Blueprint('index', __name__, static_folder=None)
 
 @csrf.exempt
 @index.route('/', methods=ALLOWED_METHODS)
