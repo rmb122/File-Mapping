@@ -121,8 +121,8 @@ function addFile() {
     $('#modifyFileName').val('');
     var editor = ace.edit("modifyFileEditor");
     editor.session.setMode('ace/mode/text');
-    editor.setReadOnly(false);
     editor.setValue('', -1);
+    editor.setReadOnly(false);
     $('#modifyFile').modal('show');
 }
 
