@@ -99,11 +99,17 @@ function modifyFile(filename) {
             $('#modifyFileUsedName').val(filename);
             $('#modifyFileName').val(filename);
             if (json['success']) {
-                $('#modifyFileContent')[0].disabled = false;
-                $('#modifyFileContent').val(json['content']);
+                var editor = ace.edit("modifyFileEditor");
+                var modelist = ace.require("ace/ext/modelist");
+                var mode = modelist.getModeForPath(filename).mode;
+                editor.setValue(json['content'], -1);
+                editor.setReadOnly(false);
+                editor.setTheme("ace/theme/tomorrow");
+                editor.session.setMode(mode);
             } else {
-                $('#modifyFileContent')[0].disabled = true;
-                $('#modifyFileContent').val(json['error']);
+                var editor = ace.edit("modifyFileEditor");
+                editor.setValue(json['error'], -1);
+                editor.setReadOnly(true);
             }
             $('#modifyFile').modal('show');
         }
@@ -113,16 +119,21 @@ function modifyFile(filename) {
 function addFile() {
     $('#modifyFileUsedName').val('');
     $('#modifyFileName').val('');
-    $('#modifyFileContent').val('');
-    $('#modifyFileContent')[0].disabled = false;
+    var editor = ace.edit("modifyFileEditor");
+    editor.session.setMode('ace/mode/text');
+    editor.setReadOnly(false);
+    editor.setValue('', -1);
     $('#modifyFile').modal('show');
 }
 
 function uploadModifyFile() {
     var usedname = $('#modifyFileUsedName').val();
     var filename = $('#modifyFileName').val();
-    var content = $('#modifyFileContent').val();
-    var disabled = $('#modifyFileContent')[0].disabled;
+
+    var editor = ace.edit("modifyFileEditor");
+    var content = editor.getValue();
+    var disabled = editor.getReadOnly();
+
     var data = {
         'filename': filename,
         'usedname': usedname,

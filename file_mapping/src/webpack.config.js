@@ -7,4 +7,5 @@ module.exports = {
         path: __dirname + '/../static/js/',
         filename: '[name].min.js'
     },
+    mode: 'production'
 };
