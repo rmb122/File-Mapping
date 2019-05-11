@@ -30,14 +30,14 @@ def login():
         else:
             flash('Password error')
 
-    return render_template('login.html', title='Login', form=form, salt=LOGIN_SALT)
+    return render_template('login.html', form=form, salt=LOGIN_SALT)
 
 
 @admin.route('/admin/panel')
 @safe
 @login_required
 def panel():
-    return render_template('panel.html', title='管理面板')
+    return render_template('panel.html')
 
 
 @admin.route('/admin/logout')
