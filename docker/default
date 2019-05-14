@@ -1,0 +1,20 @@
+server {
+        listen 80 default_server;
+        server_name _;
+
+        # reverse proxy
+        location / {
+                include uwsgi_params;
+                uwsgi_pass                      unix:/tmp/app.sock;
+                uwsgi_param Host                $host;
+                uwsgi_param X-Real-IP           $remote_addr;
+                uwsgi_param X-Forwarded-For     $proxy_add_x_forwarded_for;
+                uwsgi_param X-Forwarded-Proto   $http_x_forwarded_proto;
+        }
+
+        proxy_http_version      1.1;
+        proxy_cache_bypass      $http_upgrade;
+        proxy_set_header Upgrade        $http_upgrade;
+        proxy_set_header Connection     "upgrade";
+        proxy_set_header Host           $host;
+}

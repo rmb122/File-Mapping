@@ -1,3 +1,48 @@
+## Docker
+
+1. 安装 docker
+```sh
+sudo apt install docker.io
+```
+
+2. clone
+```sh
+git clone https://github.com/rmb122/File-Mapping.git
+```
+
+3. 修改配置文件
+假设 clone 到 /this/is/a/test/File-Mapping
+
+```sh
+cd /this/is/a/test/File-Mapping/
+vim gen_config.py # 把密码改成自己的
+python3 gen_config.py
+```
+
+因为采用 `docker`, 为了使数据持久化, git clone 的目录将会被映射到 `CONTAINER` 中的 /app,  
+上传文件和数据库也将保存在其中, 所以需要将配置文件中对应值修改,  
+uploads 文件夹会被自动创建, 不用自己 mkdir.  
+```python
+UPLOAD_PATH = '/app/uploads'
+```
+
+```sh
+cd /this/is/a/test/File-Mapping/file_mapping
+cp config.example.py config.py
+vim config.py # 把相关配置修改成上面刚刚输出的, 具体配置文件意义参考下面手工安装的介绍
+```
+
+4. 运行 docker
+```sh
+cd /this/is/a/test/File-Mapping/docker
+docker build . -t xss
+docker run -v /this/is/a/test/File-Mapping/:/app -p 8080 -it xss
+```
+其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, 8080 为 docker 映射到本机的端口
+
+
+## 手工安装
+
 需要 uwsgi + python3 插件, python3 本体 (>= 3.6), nginx  
 ```sh
 sudo apt install uwsgi uwsgi-plugin-python3 python3 python3-pip nginx-full
