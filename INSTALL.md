@@ -10,8 +10,8 @@ sudo apt install docker.io
 git clone https://github.com/rmb122/File-Mapping.git
 ```
 
-3. 修改配置文件
-假设 clone 到 /this/is/a/test/File-Mapping
+3. 修改配置文件  
+假设 clone 到 `/this/is/a/test/File-Mapping`
 
 ```sh
 cd /this/is/a/test/File-Mapping/
@@ -38,7 +38,7 @@ cd /this/is/a/test/File-Mapping/docker
 docker build . -t xss
 docker run -v /this/is/a/test/File-Mapping/:/app -p 8080:80 -it xss
 ```
-其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, 8080 为 docker 映射到本机的端口
+其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, `8080` 为 docker 映射到本机的端口
 
 
 ## 手工安装
