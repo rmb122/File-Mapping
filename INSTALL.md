@@ -20,25 +20,30 @@ python3 gen_config.py
 ```
 
 因为采用 `docker`, 为了使数据持久化, git clone 的目录将会被映射到 `CONTAINER` 中的 /app,  
-上传文件和数据库也将保存在其中, 所以需要将配置文件中对应值修改,  
-uploads 文件夹会被自动创建, 不用自己 mkdir.  
+其中上传路径和数据库已经提前配置完毕, 不需要再修改
 ```python
 UPLOAD_PATH = '/app/uploads'
 ```
 
 ```sh
 cd /this/is/a/test/File-Mapping/file_mapping
-cp config.example.py config.py
+cp config.docker.py config.py
 vim config.py # 把相关配置修改成上面刚刚输出的, 具体配置文件意义参考下面手工安装的介绍
 ```
 
 4. 运行 docker
+第一次运行
 ```sh
 cd /this/is/a/test/File-Mapping/docker
-docker build . -t xss
-docker run -v /this/is/a/test/File-Mapping/:/app -p 8080:80 -it xss
+docker build . -t xss-base
+docker run --name xss -v /this/is/a/test/File-Mapping/:/app -p 8080:80 -it xss-base
 ```
-其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, `8080` 为 docker 映射到本机的端口
+其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, `8080` 为 docker 映射到本机的端口  
+
+之后运行
+```sh
+docker start xss
+```
 
 
 ## 手工安装
@@ -57,16 +62,9 @@ config:
 
 ```sh
 cp config.example.py config.py # 不要用 mv, example 将会作为配置的缺省值
-```
-```python
-from file_mapping.utils import urandom, generaterSalt, generaterPass
-
-password = 'modify this to your own password here'
-salt = generaterSalt()
-hash = generaterPass(password, salt)
-print(f"SECRET_KEY = {urandom(16)}")
-print(f"ADMIN_PASSWORD = '{hash}'")
-print(f"LOGIN_SALT = '{salt}'")
+cd ..
+vim gen_config.py # 把密码改成自己的
+python3 gen_config.py
 ```
 
 uwsgi:  

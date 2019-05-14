@@ -1,10 +1,8 @@
-cd /app
-chown www-data .
-chmod 755 .
+mysql_install_db
+service mysql start
+service nginx start
 
-touch app.db
-chown www-data app.db
-chmod 600 app.db
+cat /init.sql | mysql
 
 if [ ! -d "uploads" ];then
 mkdir uploads
