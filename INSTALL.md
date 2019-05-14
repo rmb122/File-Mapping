@@ -36,7 +36,7 @@ vim config.py # 把相关配置修改成上面刚刚输出的, 具体配置文�
 ```sh
 cd /this/is/a/test/File-Mapping/docker
 docker build . -t xss
-docker run -v /this/is/a/test/File-Mapping/:/app -p 8080 -it xss
+docker run -v /this/is/a/test/File-Mapping/:/app -p 8080:80 -it xss
 ```
 其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, 8080 为 docker 映射到本机的端口
 

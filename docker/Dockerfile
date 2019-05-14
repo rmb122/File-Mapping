@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+MAINTAINER rmb122 me@rmb122.cn
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
