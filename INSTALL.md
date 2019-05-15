@@ -1,48 +1,39 @@
 ## Docker
 
 1. 安装 docker
+
 ```sh
 sudo apt install docker.io
 ```
 
 2. clone
+
 ```sh
 git clone https://github.com/rmb122/File-Mapping.git
 ```
 
-3. 修改配置文件  
-假设 clone 到 `/this/is/a/test/File-Mapping`
+3. 安装  
 
+首先编译 Dockerfile
 ```sh
-cd /this/is/a/test/File-Mapping/
-vim gen_config.py # 把密码改成自己的
-python3 gen_config.py
-```
-
-因为采用 `docker`, 为了使数据持久化, git clone 的目录将会被映射到 `CONTAINER` 中的 /app,  
-其中上传路径和数据库已经提前配置完毕, 不需要再修改
-```python
-UPLOAD_PATH = '/app/uploads'
-```
-
-```sh
-cd /this/is/a/test/File-Mapping/file_mapping
-cp config.docker.py config.py
-vim config.py # 把相关配置修改成上面刚刚输出的, 具体配置文件意义参考下面手工安装的介绍
-```
-
-4. 运行 docker
-第一次运行
-```sh
-cd /this/is/a/test/File-Mapping/docker
+cd File-Mapping/docker
 docker build . -t xss-base
-docker run --name xss -v /this/is/a/test/File-Mapping/:/app -p 8080:80 -it xss-base
 ```
-其中 `/this/is/a/test/File-Mapping/`, `8080` 需要自行修改, `8080` 为 docker 映射到本机的端口  
 
-之后运行
+配置环境 && 第一次运行  
+```sh
+docker run --name xss -p 8080:80 -it xss-base
+```
+其中会提示输入登录密码和 `URL_PREFIX`, 8080 是映射到本机的端口  
+
+之后运行  
 ```sh
 docker start xss
+```
+
+想要修改登录密码
+```sh
+docker exec -it xss python3 /app/change_pass.py new_password # 重启容器后生效
 ```
 
 
@@ -61,11 +52,11 @@ config:
 `URL_PREFIX` 为后台管理的路由前缀, 需要注意以 `/` 开头, 不以 `/` 结尾, 例如 `/test`, 如果不需要此功能请留空.  
 
 ```sh
-cp config.example.py config.py # 不要用 mv, example 将会作为配置的缺省值
-cd ..
-vim gen_config.py # 把密码改成自己的
-python3 gen_config.py
+python3 gen_config.py password (url_prefix)
 ```
+
+这将自动生成大部分的配置文件, 其中 `UPLOAD_PATH` 和 `SQLALCHEMY_DATABASE_URI` 根据自己的实际情况配置,  
+再次注意 `UPLOAD_PATH` 需要 `uwsgi` 的运行用户可写  
 
 uwsgi:  
 ```bash
