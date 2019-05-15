@@ -1,10 +1,7 @@
 from functools import wraps
 from hashlib import sha256
 from json import dumps
-from os import urandom
 from os.path import basename
-from random import choices
-from string import ascii_letters
 
 from flask import Flask, Response, escape, make_response
 
@@ -13,14 +10,6 @@ from file_mapping.config import LOGIN_SALT
 
 def hash(str, salt=LOGIN_SALT):
     return sha256((str + salt).encode()).hexdigest()
-
-
-def generaterPass(password, salt=LOGIN_SALT):
-    return hash(hash(password, salt), salt)
-
-
-def generaterSalt():
-    return "".join(choices(ascii_letters, k=16))
 
 
 def escapeDict(dict):
@@ -53,6 +42,7 @@ def safe(func):
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-Frame-Options'] = 'DENY'
         return response
+
     return _safe
 
 
@@ -68,6 +58,7 @@ def nocache(func):
             response.headers.pop('Last-Modified')
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
+
     return _nocache
 
 
