@@ -53,14 +53,23 @@ $(document).ready(function () {
         $('#filter').modal('show');
     });
     $('#btnSubmitFilter').click(function () {
-        var filtersID = {'#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before'};
+        var filtersID = { '#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before' };
+        var filtered = false;
         for (var key in filtersID) {
             var val = $(key).val().trim();
+            $(key).val(val);
+            if (val !== '') {
+                filtered = true;
+            }
             filters[filtersID[key]] = val;
         }
         currPage = 1;
         filters['page'] = 1;
-        $('#btnFilter')[0].classList.add('btn-danger');
+        if (filtered) {
+            $('#btnFilter')[0].classList.add('btn-danger');
+        } else {
+            $('#btnFilter')[0].classList.remove('btn-danger');
+        }
         $('#filter').modal('hide');
         getLogs(filters);
     });
