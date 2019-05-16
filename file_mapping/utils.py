@@ -86,8 +86,11 @@ def nocache(func):
             response = make_response(response)
         if 'ETag' in response.headers.keys():
             response.headers.pop('ETag')
-            response.headers.pop('Expires')
             response.headers.pop('Last-Modified')
+            
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
 
