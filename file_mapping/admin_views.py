@@ -265,7 +265,7 @@ def getlogs():
 
     for key in args:
         value = request.form.get(key, None, str)
-        if value and value != '':
+        if value:
             query = query.filter(args[key] == value)
 
     if after:
