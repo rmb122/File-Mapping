@@ -50,6 +50,10 @@ $(document).ready(function () {
         }
     });
     $('#btnFilter').click(function () {
+        var filtersID = { '#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before' };
+        for (var key in filtersID) {
+            $(key).val(filters[filtersID[key]]);
+        }
         $('#filter').modal('show');
     });
     $('#btnSubmitFilter').click(function () {
