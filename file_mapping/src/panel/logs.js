@@ -50,14 +50,12 @@ $(document).ready(function () {
         }
     });
     $('#btnFilter').click(function () {
-        var filtersID = { '#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before' };
         for (var key in filtersID) {
             $(key).val(filters[filtersID[key]]);
         }
         $('#filter').modal('show');
     });
     $('#btnSubmitFilter').click(function () {
-        var filtersID = { '#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before' };
         var filtered = false;
         for (var key in filtersID) {
             var val = $(key).val().trim();
@@ -78,7 +76,6 @@ $(document).ready(function () {
         getLogs(filters);
     });
     $('#btnClearFilter').click(function () {
-        var filtersID = {'#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before'};
         for (var key in filtersID) {
             $(key).val('');
             filters[filtersID[key]] = '';
@@ -109,6 +106,7 @@ $(document).on('click', function (e) {
     });
 });
 
+var filtersID = {'#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before'};
 var filters = {};
 var currPage = 1;
 var pageCount = 0;
