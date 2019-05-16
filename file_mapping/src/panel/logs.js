@@ -2,22 +2,34 @@ import UAParser from './ua-parser.js';
 import toast from './toast.js';
 
 $(document).ready(function () {
+    var token = $('meta[name=csrf-token]').attr('content');
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", token)
+            }
+        }
+    });
+
     $("#btnGetLogs").click(function () {
         $('title').text('管理面板');
         $('#btnGetLogs')[0].classList.remove('text-danger');
-        getLogs(1);
+        filters['page'] = 1;
+        getLogs(filters);
         currPage = 1;
     });
     $("#pagePre").click(function () {
         if (currPage - 1 != 0) {
             currPage -= 1;
-            getLogs(currPage);
+            filters['page'] = currPage;
+            getLogs(filters);
         }
     });
     $("#pageNext").click(function () {
         if (currPage + 1 <= pageCount) {
             currPage += 1;
-            getLogs(currPage);
+            filters['page'] = currPage;
+            getLogs(filters);
         }
     });
     $("#btnJump").click(function () {
@@ -28,7 +40,8 @@ $(document).ready(function () {
         } else {
             $("#pageJump").val('');
             currPage = pageInt;
-            getLogs(String(page));
+            filters['page'] = currPage;
+            getLogs(filters);
         }
     });
     $("#btnDellogs").click(function () {
@@ -36,13 +49,42 @@ $(document).ready(function () {
             dellogs();
         }
     });
+    $('#btnFilter').click(function () {
+        $('#filter').modal('show');
+    });
+    $('#btnSubmitFilter').click(function () {
+        var filtersID = {'#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before'};
+        for (var key in filtersID) {
+            var val = $(key).val().trim();
+            filters[filtersID[key]] = val;
+        }
+        currPage = 1;
+        filters['page'] = 1;
+        $('#btnFilter')[0].classList.add('btn-danger');
+        $('#filter').modal('hide');
+        getLogs(filters);
+    });
+    $('#btnClearFilter').click(function () {
+        var filtersID = {'#filterIP': 'ip', '#filterMethod': 'method', '#filterRoute': 'route', '#filterAfter': 'after', '#filterBefore': 'before'};
+        for (var key in filtersID) {
+            $(key).val('');
+            filters[filtersID[key]] = '';
+        }
+        currPage = 1;
+        filters['page'] = 1;
+        $('#btnFilter')[0].classList.remove('btn-danger');
+        $('#filter').modal('hide');
+        getLogs(filters);
+    });
     $("a").hover(function () {
         $('[data-toggle="popover"]').popover('hide');
-    })
+    });
     $("button").hover(function () {
         $('[data-toggle="popover"]').popover('hide');
-    })
-    getLogs(1);
+    });
+
+    filters['page'] = 1;
+    getLogs(filters);
     setInterval(fetchUpdate, 2000);
 });
 
@@ -54,6 +96,7 @@ $(document).on('click', function (e) {
     });
 });
 
+var filters = {};
 var currPage = 1;
 var pageCount = 0;
 var logs;
@@ -124,18 +167,16 @@ function highlightJSON(json) {
     });
 }
 
-function getLogs(page) {
+function getLogs(filters) {
     $("#container")[0].className = 'container-fluid';
     $("#table")[0].classList.add("sm-font");
     $("#controller")[0].classList.remove("hidden");
     var t = $("#table")[0];
     t.innerHTML = "";
     var temp = '<thead><tr><th scope="col" class="text-center w-3rem">ID</th><th scope="col" class="text-center w-9rem">时间</th><th scope="col" class="text-center w-7rem">IP</th><th scope="col" class="text-center w-12rem">地区</th><th scope="col" class="text-center w-16rem">UA</th><th scope="col" class="text-center w-3rem">类型</th><th scope="col">数据</th></tr></thead><tbody>';
-    $.get(
+    $.post(
         'getlogs',
-        {
-            'page': page,
-        },
+        filters,
         function (json) {
             var count = json['count'];
             if (count === 0) {
@@ -143,7 +184,7 @@ function getLogs(page) {
             } else {
                 pageCount = Math.ceil(count / 35);
             }
-            $("#currPage")[0].innerText = String(page);
+            $("#currPage")[0].innerText = String(filters['page']);
             $("#pageCount")[0].innerText = String(pageCount);
             logs = json['logs'];
             logs.map(function (dict, index) {
@@ -192,7 +233,8 @@ function dellogs() {
         },
         function (json) {
             if (json['success']) {
-                getLogs(1);
+                filters['page'] = 1;
+                getLogs(filters);
                 toast('清空成功', 'info');
             } else {
                 toast(json['error'], 'danger');

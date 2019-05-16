@@ -7,9 +7,9 @@
 <title>管理面板</title>
 
 <head>
-    <link href="{{ config['URL_PREFIX'] }}/static/css/panel.css" rel="stylesheet">
-    <link href="{{ config['URL_PREFIX'] }}/static/css/font-awesome.min.css" rel="stylesheet">
-    <link href="{{ config['URL_PREFIX'] }}/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/panel.css" rel="stylesheet">
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -17,12 +17,13 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">管理面板</li>
             <li class="breadcrumb-item active"><a href="#" data-toggle="modal" data-target="#newRule">新建规则</a></li>
-            <li class="breadcrumb-item active"><label class="fileLabel" for="fileInput">上传文件</label></li>
+            <li class="breadcrumb-item active"><label class="fileLabel mb-0" for="fileInput">上传文件</label></li>
             <li class="breadcrumb-item active"><a id="btnAddFile" href="#">添加文件</a></li>
             <li class="breadcrumb-item active"><a id="btnGetRules" href="#">规则列表</a></li>
             <li class="breadcrumb-item active"><a id="btnGetFiles" href="#">文件列表</a></li>
-            <li class="breadcrumb-item active"><a id="btnGetLogs" href="#">访问记录</a></li>
-            <li class="breadcrumb-item active"><a href="{{ config['URL_PREFIX'] }}/admin/logout">登出</a></li>
+            <li class="breadcrumb-item active mr-auto"><a id="btnGetLogs" href="#">访问记录</a></li>
+            <li class="breadcrumb-item active"><a id="btnDellogs" href="#" class="text-danger">清空记录</a></li>
+            <li class="breadcrumb-item active mr-2"><a href="logout">登出</a></li>
         </ol>
     </nav>
     <input type="file" id="fileInput" class="hidden">
@@ -30,6 +31,7 @@
     {% include('modalNewRule.html') %}
     {% include('modalModifyRule.html') %}
     {% include('modalModifyFile.html') %}
+    {% include('modalFilter.html') %}
 
     <div id="container" class="container">
         <div class="table-responsive">
@@ -60,7 +62,7 @@
             <div class="d-flex flex-row justify-content-center align-items-center mt-3">
                 <input id="pageJump" class="w-3rem form-control form-control-sm" type="text"></input>
                 <button id="btnJump" class="btn btn-primary btn-sm ml-1">跳转</button>
-                <button id="btnDellogs" class="btn btn-danger btn-sm ml-1">清空</button>
+                <button id="btnFilter" class="btn btn-primary btn-sm ml-1">过滤</button>
             </div>
         </div>
     </div>
@@ -68,9 +70,9 @@
     <div class="top" id="toast-container"></div>
 
 </body>
-<script src="{{ config['URL_PREFIX'] }}/static/js/jquery.min.js"></script>
-<script src="{{ config['URL_PREFIX'] }}/static/js/bootstrap.bundle.min.js"></script>
-<script src="{{ config['URL_PREFIX'] }}/static/js/panel.min.js"></script>
-<script src="{{ config['URL_PREFIX'] }}/static/js/ace/ace.js"></script>
-<script src="{{ config['URL_PREFIX'] }}/static/js/ace/ext-modelist.js"></script>
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.bundle.min.js"></script>
+<script src="../static/js/panel.min.js"></script>
+<script src="../static/js/ace/ace.js"></script>
+<script src="../static/js/ace/ext-modelist.js"></script>
 </html>

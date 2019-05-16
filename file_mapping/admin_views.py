@@ -7,15 +7,15 @@ from flask import Blueprint, Flask, escape, flash, jsonify, redirect, render_tem
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 
-from file_mapping import app, db, ip2Region
+from file_mapping import app, csrf, db, ip2Region
 from file_mapping.config import ADMIN_PASSWORD, LOGIN_SALT, MAX_PREVIEW_SIZE, UPLOAD_PATH, URL_PREFIX
 from file_mapping.forms import LoginForm
 from file_mapping.models import Log, Rule, User
-from file_mapping.utils import escapeDict, formatRegion, hash, safe
+from file_mapping.utils import escape_dict, format_logs, format_region, hash, safe
 
 admin = Blueprint('admin', __name__, static_folder='static')
 
-@admin.route('/admin', methods=['GET', 'POST'])
+@admin.route('/admin/', methods=['GET', 'POST'])
 @safe
 def login():
     if current_user.is_authenticated:
@@ -248,43 +248,37 @@ def getfilelist():
     return jsonify(response)
 
 
-@admin.route('/admin/getlogs')
+@admin.route('/admin/getlogs', methods=['POST'])
 @safe
 @login_required
 def getlogs():
-    page = request.args.get('page', 1, int)
+    before = request.form.get('before', None, str)
+    after = request.form.get('after', None, str)
+    page = request.form.get('page', 1, int)
     if page < 1:
         page = 1
-    response = {}
-    logs = Log.query.order_by(db.text('-id')).offset((page - 1) * 35).limit(35).all()
-    count, = db.session.query(db.func.count(Log.id)).one()
-    response['count'] = count
-    response['logs'] = []
 
-    for log in logs:
-        if log.ip != "":
-            region = ""
-            retry = 0
-            while not region and retry < 6:
-                try:
-                    region = ip2Region.btreeSearch(log.ip)
-                except Exception:
-                    retry += 1
-                    pass
-            region = formatRegion(region)
-        else:
-            region = "不支持 IPv6 地址查询"
-        response['logs'].append({
-            'Method': escape(log.method),
-            'IP': escape(log.ip),
-            'Region': escape(region),
-            'Time': log.time.strftime('%Y-%m-%d %H:%M:%S'),
-            'Route': escape(log.route),
-            'Header': escapeDict(loads(log.header)),
-            'GET': escapeDict(loads(log.get)),
-            'POST': escapeDict(loads(log.post)),
-            'ID': log.id
-        })
+    response = {}
+
+    query = db.session.query(Log)
+    args = {'ip': Log.ip, 'route': Log.route, 'method': Log.method}
+
+    for key in args:
+        value = request.form.get(key, None, str)
+        if value and value != '':
+            query = query.filter(args[key] == value)
+
+    if after:
+        query = query.filter(Log.time >= after)
+
+    if before:
+        query = query.filter(Log.time <= before)
+    
+    logs = query.order_by(db.text('-id')).offset((page - 1) * 35).limit(35).all()
+    count = query.count()
+    
+    response['logs'] = format_logs(logs, ip2Region)
+    response['count'] = count
     return jsonify(response)
 
 

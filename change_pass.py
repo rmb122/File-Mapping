@@ -14,11 +14,12 @@ def change_pass(password):
 
     with open(join(path[0], 'file_mapping/config.py'), 'w') as f:
         for key in config:
-            f.write(f"\n{key} = ")
+            f.write(f"{key} = ")
             if type(config[key]) == str:
                 f.write(f"'{config[key]}'")
             else:
                 f.write(f"{config[key]}")
+            f.write('\n')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,30 @@
+<div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="filterTitle" class="modal-title">过滤</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column mr-auto">
+                    <label for="filterIP" class="mb-0">IP</label>
+                    <input id="filterIP" type="text" class="form-control mb-2" placeholder="0.0.0.0"></input>
+                    <label for="filterMethod" class="mb-0">方法</label>
+                    <input id="filterMethod" type="text" class="form-control mb-2" placeholder="GET"></input>
+                    <label for="filterRoute" class="mb-0">路由</label>
+                    <input id="filterRoute" type="text" class="form-control mb-2" placeholder="/example"></input>
+                    <label for="filterAfter" class="mb-0">在这之后</label>
+                    <input id="filterAfter" type="text" class="form-control mb-2" placeholder="2019-8-10 11:45:14"></input>
+                    <label for="filterBefore" class="mb-0">在这之前</label>
+                    <input id="filterBefore" type="text" class="form-control mb-2" placeholder="2019-8-10 12:19:19"></input>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnClearFilter" type="button" class="btn ml-auto btn-danger">清空</button>
+                <button id="btnSubmitFilter" type="button" class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </div>
+</div>

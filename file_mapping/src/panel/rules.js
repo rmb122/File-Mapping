@@ -5,15 +5,6 @@ $(document).ready(function () {
     $("#btnAddRule").click(addRule);
     $("#btnModifyRule").click(modifyRule);
     $("#btnGetRules").click(getRules);
-
-    var token = $('meta[name=csrf-token]').attr('content');
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", token)
-            }
-        }
-    });
 });
 
 var rules = {};
