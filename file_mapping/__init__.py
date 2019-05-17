@@ -4,10 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 
 from file_mapping.asserts.ip2region import Ip2Region
+from file_mapping.config import URL_PREFIX
 from file_mapping.utils import NoServerHeaderFlask
 
 app = NoServerHeaderFlask(__name__, static_folder=None)
 app.config.from_pyfile('config.py')
+app.config['SESSION_COOKIE_PATH'] = f'{URL_PREFIX}/admin/'
+
 csrf = CSRFProtect()
 csrf.init_app(app)
 db = SQLAlchemy(app)
