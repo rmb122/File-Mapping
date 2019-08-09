@@ -5,7 +5,7 @@ from flask import Blueprint, request, send_file
 from werkzeug.utils import secure_filename
 
 from file_mapping import app, csrf, db
-from file_mapping.config import ALLOWED_METHODS, UPLOAD_PATH
+from file_mapping.config import ALLOWED_METHODS, UPLOAD_PATH, BEHIND_PROXY
 from file_mapping.models import Log, Rule
 from file_mapping.utils import nocache
 
@@ -36,8 +36,11 @@ def mapping(path=''):
                         post = '{}'
                 except Exception:
                     post = '{}'
-
-            ip = request.remote_addr
+            
+            if BEHIND_PROXY:
+                ip = request.headers.get('X-Real-IP', '').split(',')[0]
+            else:
+                ip = request.remote_addr
             if ip.find(":", 0, 5) != -1:  # 判断是不是 ipv6
                 ip = ""
             log = Log(route=path, header=header, get=get, post=post, ip=ip, method=method)

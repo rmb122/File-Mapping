@@ -3,6 +3,7 @@ ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.db'
 # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://user:pass@localhost:3306/dbname'
+BEHIND_PROXY = False
 
 SECRET_KEY = ''
 ADMIN_PASSWORD = ''

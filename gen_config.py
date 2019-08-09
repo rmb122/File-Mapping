@@ -1,5 +1,5 @@
 from hashlib import sha256
-from os import mkdir, urandom
+from os import mkdir, urandom, getenv
 from os.path import exists, join
 from random import choices
 from string import ascii_letters
@@ -21,22 +21,28 @@ def generaterSalt():
 def gen_config(password, url_prefix=''):
     config = {}
     cwd = path[0]
-    if exists('/.dockerenv'):
-        with open(join(cwd, 'file_mapping/config.docker.py'), 'rb') as f:
-            exec(f.read(), None, config)
-    else:
-        with open(join(cwd, 'file_mapping/config.example.py'), 'rb') as f:
-            exec(f.read(), None, config)
 
-    if not exists(join(cwd, 'uploads')):
-        mkdir(join(cwd, 'uploads'))
+    with open(join(cwd, 'file_mapping/config.example.py'), 'rb') as f:
+        exec(f.read(), None, config)
     
     salt = generaterSalt()
     config['LOGIN_SALT'] = salt
     config['ADMIN_PASSWORD'] = generaterPass(password, salt)
     config['SECRET_KEY'] = urandom(16)
-    config['URL_PREFIX'] = url_prefix
-    config['UPLOAD_PATH'] = join(cwd, 'uploads')
+    config['URL_PREFIX'] = getenv('URL_PREFIX') or url_prefix
+    config['UPLOAD_PATH'] = getenv('UPLOAD_PATH') or join(cwd, 'uploads')
+    config['SQLALCHEMY_DATABASE_URI'] = getenv('SQLALCHEMY_DATABASE_URI') or config['SQLALCHEMY_DATABASE_URI']
+    
+    proxy = False
+
+    if getenv('BEHIND_PROXY'):
+        proxy = getenv('BEHIND_PROXY')
+        if proxy.lower() == 'true' or proxy == '1':
+            proxy = True
+        else:
+            proxy = False
+    
+    config['BEHIND_PROXY'] = proxy
 
     with open(join(path[0], 'file_mapping/config.py'), 'w') as f:
         for key in config:

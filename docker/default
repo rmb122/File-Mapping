@@ -7,7 +7,7 @@ server {
                 include uwsgi_params;
                 uwsgi_pass                      unix:/tmp/app.sock;
                 uwsgi_param Host                $host;
-                uwsgi_param X-Real-IP           $remote_addr;
+                uwsgi_param X-Real-IP           $http_x_real_ip; # get the read ip from proxy
                 uwsgi_param X-Forwarded-For     $proxy_add_x_forwarded_for;
                 uwsgi_param X-Forwarded-Proto   $http_x_forwarded_proto;
         }

@@ -20,15 +20,18 @@ def escape_dict(dict):
 
 
 def format_region(region):
-    region = region['region'].decode()
-    region = region.split('|')
-    tmp = []
-    for k in region:
-        if k != '0':
-            tmp.append(k)
-        if k == '内网IP':
-            return '局域网'
-    return ''.join(tmp)
+    try:
+        region = region['region'].decode()
+        region = region.split('|')
+        tmp = []
+        for k in region:
+            if k != '0':
+                tmp.append(k)
+            if k == '内网IP':
+                return '局域网'
+        return ''.join(tmp)
+    except Exception:
+        return '解析错误'
 
 
 def format_logs(logs, ip2Region):
@@ -38,7 +41,7 @@ def format_logs(logs, ip2Region):
         if log.ip != "":
             region = ""
             retry = 0
-            while not region and retry < 6:
+            while not region and retry < 3:
                 try:
                     region = ip2Region.btreeSearch(log.ip)
                 except Exception:
