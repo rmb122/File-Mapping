@@ -4,6 +4,7 @@
 
 ```sh
 sudo apt install docker.io
+sudo apt install docker-compose
 ```
 
 2. clone
@@ -14,27 +15,16 @@ git clone https://github.com/rmb122/File-Mapping.git
 
 3. 安装  
 
-首先编译 Dockerfile
-```sh
-cd File-Mapping/docker
-docker build . -t xss-base
-```
+修改 docker-comose 里面的 environment 成想要的配置,  
+`LOGIN_PASSWORD` 为登录密码, 其他可以不用修改.  
 
-配置环境 && 第一次运行  
+然后
 ```sh
-docker run --name xss -p 8080:80 -it xss-base
+sudo systemctl enable docker
+sudo systemctl status docker
+sudo docker-compose up
 ```
-其中会提示输入登录密码和 `URL_PREFIX`, 8080 是映射到本机的端口  
-
-之后运行  
-```sh
-docker start xss
-```
-
-想要修改登录密码
-```sh
-docker exec -it xss python3 /app/change_pass.py new_password # 重启容器后生效
-```
+即可.
 
 
 ## 手工安装
